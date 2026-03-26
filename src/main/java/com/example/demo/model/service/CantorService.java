@@ -3,10 +3,9 @@ package com.example.demo.model.service;
 import com.example.demo.model.entity.Cantor;
 import com.example.demo.model.entity.Contato;
 import com.example.demo.model.entity.Genero;
+import com.example.demo.model.repository.CantorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.example.demo.model.repository.CantorRepository;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -16,8 +15,14 @@ public class CantorService {
     @Autowired
     private CantorRepository cantorRepository;
 
-    public boolean criarCantor(@RequestBody Cantor cantor) {
+    @Autowired
+    private CantorAsyncService cantorAsyncService;
+
+    public boolean criarCantor(Cantor cantor) {
         cantorRepository.save(cantor);
+
+        cantorAsyncService.processarNovoCantor(cantor.getNome());
+
         return true;
     }
 
@@ -59,7 +64,6 @@ public class CantorService {
 
         if (dadosNovos.getContatos() != null) {
             for (Contato novoContato : dadosNovos.getContatos()) {
-
 
                 if (novoContato.getId() != null && novoContato.getTipo() == null && novoContato.getContato() == null) {
                     cantor.getContatos().removeIf(c -> c.getId().equals(novoContato.getId()));
@@ -110,6 +114,7 @@ public class CantorService {
                 }
             }
         }
+
         cantorRepository.save(cantor);
     }
 }
