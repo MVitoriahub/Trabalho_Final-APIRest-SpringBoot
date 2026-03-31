@@ -16,7 +16,7 @@ public class CantorService {
     private CantorRepository cantorRepository;
 
     @Autowired
-    private CantorAsyncService cantorAsyncService;
+    private CantorAsyncServiceMaria cantorAsyncService;
 
     public boolean criarCantor(Cantor cantor) {
         cantorRepository.save(cantor);
